@@ -4,6 +4,7 @@ const global = {
   currenthPath: window.location.pathname,
 };
 
+// display popular movies list
 async function displayPopularMovies() {
   const { results } = await fetchAPIData("movie/popular");
   results.forEach((movie) => {
@@ -32,6 +33,7 @@ async function displayPopularMovies() {
   });
 }
 
+// display popular tv shows list
 async function displayPopularTVShows() {
   const { results } = await fetchAPIData("tv/popular");
   results.forEach((show) => {
@@ -58,6 +60,71 @@ async function displayPopularTVShows() {
   });
 }
 
+//display movie details
+async function displayMovieDetails() {
+  const movieId = window.location.search.split("=")[1];
+  const movie = await fetchAPIData(`movie/${movieId}`);
+  const div = document.createElement("div");
+
+  div.innerHTML = `
+  <div class="details-top">
+          <div>
+          <img
+          src=${
+            movie.poster_path
+              ? IMAGE_PATH + movie.poster_path
+              : "images/no-image.jpg"
+          }
+          class="card-img-top"
+          alt=${movie.title}
+        />
+          </div>
+          <div>
+            <h2>${movie.title}</h2>
+            <p>
+              <i class="fas fa-star text-primary"></i>
+              ${movie.vote_average.toFixed(1)}/ 10
+            </p>
+            <p class="text-muted">Release Date: ${movie.release_date}</p>
+            <p>${movie.overview}</p>
+            <h5>Genres</h5>
+            <ul class="list-group">
+            ${movie.genres.map((genre) => `<li>${genre.name}</li>`).join("")}
+            </ul>
+            <a href=${
+              movie.homepage
+            } target="_blank" class="btn">Visit Movie Homepage</a>
+          </div>
+        </div>
+        <div class="details-bottom">
+          <h2>Movie Info</h2>
+          <ul>
+            <li><span class="text-secondary">Budget:</span> $${moneyFormat(
+              movie.budget
+            )}</li>
+            <li><span class="text-secondary">Revenue:</span> $${moneyFormat(
+              movie.revenue
+            )}</li>
+            <li><span class="text-secondary">Runtime:</span> ${
+              movie.runtime
+            } minutes</li>
+            <li><span class="text-secondary">Status:</span> ${movie.status}</li>
+          </ul>
+          <h4>Production Companies</h4>
+          <div class="list-group">${movie.production_companies
+            .map((company) => `<span>${company.name}</span>`)
+            .join(", ")}</div>
+        </div>
+  `;
+  document.querySelector("#movie-details").appendChild(div);
+}
+
+// add commas to money
+function moneyFormat(value) {
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+// fetches data from an API endpoint
 async function fetchAPIData(endpoint) {
   showSpinner();
   const response = await fetch(
@@ -104,7 +171,7 @@ function init() {
       displayPopularTVShows();
       break;
     case routes.MOVIE_DETAILS:
-      console.log("Movie Details");
+      displayMovieDetails();
       break;
     case routes.TV_DETAILS:
       console.log("TV Details");
