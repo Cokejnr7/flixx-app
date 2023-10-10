@@ -3,16 +3,26 @@ const global = {
 };
 
 const paths = {
-  HOME: "/",
+  HOME: "/index.html",
   SHOWS: "/shows.html",
   MOVIE_DETAILS: "/movie-details.html",
   TV_DETAILS: "/tv-details.html",
   SEARCH: "/search.html",
 };
 
+function highlightActiveLink() {
+  const navLinks = document.querySelectorAll(".nav-link");
+  navLinks.forEach((link) => {
+    if (link.getAttribute("href") === global.currenthPath) {
+      link.classList.add("active");
+    }
+  });
+}
+
 function init() {
   switch (global.currenthPath) {
     case "/":
+    case paths.HOME:
       console.log("Home");
       break;
     case paths.SHOWS:
@@ -28,6 +38,8 @@ function init() {
       console.log("Search");
       break;
   }
+
+  highlightActiveLink();
 }
 
 document.addEventListener("DOMContentLoaded", init);
