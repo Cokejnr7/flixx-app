@@ -1,5 +1,4 @@
-import { API_KEY, API_URL, IMAGE_PATH } from "../secret.js";
-
+import { API_KEY, API_URL, IMAGE_PATH, OVERLAY_PATH } from "../secret.js";
 const global = {
   currenthPath: window.location.pathname,
 };
@@ -66,6 +65,9 @@ async function displayMovieDetails() {
   const movie = await fetchAPIData(`movie/${movieId}`);
   const div = document.createElement("div");
 
+  // overlay for background image
+  displayBackgroundImage("movie", movie.backdrop_path);
+
   div.innerHTML = `
   <div class="details-top">
           <div>
@@ -117,6 +119,20 @@ async function displayMovieDetails() {
         </div>
   `;
   document.querySelector("#movie-details").appendChild(div);
+}
+
+function displayBackgroundImage(type, backgroudPath) {
+  const overlayDiv = document.createElement("div");
+  overlayDiv.style.backgroundImage = `url("${OVERLAY_PATH}/${backgroudPath}")`;
+  overlayDiv.classList.add("overlay");
+  switch (type) {
+    case "movie":
+      document.querySelector("#movie-details").appendChild(overlayDiv);
+      break;
+    case "show":
+      document.querySelector("#show-details").appendChild(overlayDiv);
+      break;
+  }
 }
 
 // add commas to money
