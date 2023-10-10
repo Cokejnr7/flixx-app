@@ -6,7 +6,6 @@ const global = {
 
 async function displayPopularMovies() {
   const { results } = await fetchAPIData("movie/popular");
-  console.log(results);
   results.forEach((movie) => {
     const div = document.createElement("div");
     div.classList.add("card");
@@ -33,15 +32,49 @@ async function displayPopularMovies() {
   });
 }
 
-displayPopularMovies();
+async function displayPopularTVShows() {
+  const { results } = await fetchAPIData("tv/popular");
+  results.forEach((show) => {
+    const div = document.createElement("div");
+    div.classList.add("card");
+    div.innerHTML = ` 
+    <a href="tv-details.html?id=${show.id}">
+    <img
+      src=${
+        show.poster_path ? IMAGE_PATH + show.poster_path : "images/no-image.jpg"
+      }
+      class="card-img-top"
+      alt=${show.name}
+    />
+  </a>
+  <div class="card-body">
+    <h5 class="card-title">${show.name}</h5>
+    <p class="card-text">
+      <small class="text-muted">Air Date: ${show.first_air_date}</small>
+    </p>
+  </div>`;
+
+    document.querySelector("#popular-shows").appendChild(div);
+  });
+}
 
 async function fetchAPIData(endpoint) {
+  showSpinner();
   const response = await fetch(
     `${API_URL}/${endpoint}?api_key=${API_KEY}&language=en-US`
   );
 
   const data = await response.json();
+  hideSpinner();
   return data;
+}
+
+function showSpinner() {
+  document.querySelector(".spinner").classList.add("show");
+}
+
+function hideSpinner() {
+  document.querySelector(".spinner").classList.remove("show");
 }
 
 const routes = {
@@ -65,10 +98,10 @@ function init() {
   switch (global.currenthPath) {
     case "/":
     case routes.HOME:
-      console.log("Home");
+      displayPopularMovies();
       break;
     case routes.SHOWS:
-      console.log("Shows");
+      displayPopularTVShows();
       break;
     case routes.MOVIE_DETAILS:
       console.log("Movie Details");
