@@ -121,6 +121,68 @@ async function displayMovieDetails() {
   document.querySelector("#movie-details").appendChild(div);
 }
 
+//display show details
+async function displayShowDetails() {
+  const showId = window.location.search.split("=")[1];
+  const show = await fetchAPIData(`tv/${showId}`);
+  const div = document.createElement("div");
+
+  console.log(show);
+
+  // overlay for background image
+  displayBackgroundImage("show", show.backdrop_path);
+
+  div.innerHTML = `
+  <div class="details-top">
+          <div>
+          <img
+          src=${
+            show.poster_path
+              ? IMAGE_PATH + show.poster_path
+              : "images/no-image.jpg"
+          }
+          class="card-img-top"
+          alt=${show.name}
+        />
+          </div>
+          <div>
+            <h2>${show.name}</h2>
+            <p>
+              <i class="fas fa-star text-primary"></i>
+              ${show.vote_average.toFixed(1)}/ 10
+            </p>
+            <p class="text-muted">Last Air Date: ${show.last_air_date}</p>
+            <p>${show.overview}</p>
+            <h5>Genres</h5>
+            <ul class="list-group">
+            ${show.genres.map((genre) => `<li>${genre.name}</li>`).join("")}
+            </ul>
+            <a href=${
+              show.homepage
+            } target="_blank" class="btn">Visit Movie Homepage</a>
+          </div>
+        </div>
+        <div class="details-bottom">
+          <h2>Show Info</h2>
+          <ul>
+            <li><span class="text-secondary">Number of Episodes:</span> $${
+              show.number_of_episodes
+            }</li>
+            <li><span class="text-secondary">Last Episode to Air:</span> ${
+              show.last_episode_to_air.name
+            }</li>
+            <li><span class="text-secondary">Status:</span> ${show.status}</li>
+          </ul>
+          <h4>Production Companies</h4>
+          <div class="list-group">${show.production_companies
+            .map((company) => `<span>${company.name}</span>`)
+            .join(", ")}</div>
+        </div>
+  `;
+  document.querySelector("#show-details").appendChild(div);
+}
+
+// display details pages background
 function displayBackgroundImage(type, backgroudPath) {
   const overlayDiv = document.createElement("div");
   overlayDiv.style.backgroundImage = `url("${OVERLAY_PATH}/${backgroudPath}")`;
@@ -164,7 +226,7 @@ const routes = {
   HOME: "/index.html",
   SHOWS: "/shows.html",
   MOVIE_DETAILS: "/movie-details.html",
-  TV_DETAILS: "/tv-details.html",
+  SHOW_DETAILS: "/tv-details.html",
   SEARCH: "/search.html",
 };
 
@@ -189,8 +251,8 @@ function init() {
     case routes.MOVIE_DETAILS:
       displayMovieDetails();
       break;
-    case routes.TV_DETAILS:
-      console.log("TV Details");
+    case routes.SHOW_DETAILS:
+      displayShowDetails();
       break;
     case routes.SEARCH:
       console.log("Search");
