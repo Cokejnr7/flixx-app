@@ -2,7 +2,9 @@ const global = {
   currenthPath: window.location.pathname,
 };
 
-const paths = {
+async function fetchAPIData() {}
+
+const routes = {
   HOME: "/index.html",
   SHOWS: "/shows.html",
   MOVIE_DETAILS: "/movie-details.html",
@@ -22,19 +24,19 @@ function highlightActiveLink() {
 function init() {
   switch (global.currenthPath) {
     case "/":
-    case paths.HOME:
+    case routes.HOME:
       console.log("Home");
       break;
-    case paths.SHOWS:
+    case routes.SHOWS:
       console.log("Shows");
       break;
-    case paths.MOVIE_DETAILS:
+    case routes.MOVIE_DETAILS:
       console.log("Movie Details");
       break;
-    case paths.TV_DETAILS:
+    case routes.TV_DETAILS:
       console.log("TV Details");
       break;
-    case paths.SEARCH:
+    case routes.SEARCH:
       console.log("Search");
       break;
   }
