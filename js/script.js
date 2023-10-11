@@ -1,4 +1,4 @@
-import { API_KEY, API_URL, IMAGE_PATH, OVERLAY_PATH } from "../secret.js";
+import { API_KEY, API_URL, IMAGE_PATH, OVERLAY_PATH } from "./config.js";
 const global = {
   currenthPath: window.location.pathname,
   search: {
