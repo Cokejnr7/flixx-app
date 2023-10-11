@@ -267,6 +267,31 @@ function displaySearchResults(results) {
     `;
     document.querySelector("#search-results").appendChild(div);
   });
+
+  displayPagination();
+}
+
+// creates and displays pagination
+function displayPagination() {
+  const div = document.createElement("div");
+  div.classList.add("pagination");
+  div.innerHTML = `
+  <button class="btn btn-primary" id="prev">Prev</button>
+  <button class="btn btn-primary" id="next">Next</button>
+  <div class="page-counter">Page ${global.search.page} of ${global.search.totalPages}</div>
+  `;
+
+  document.querySelector("#pagination").appendChild(div);
+
+  //disable previous button on first page
+  if (global.search.page === 1) {
+    document.querySelector("#prev").setAttribute("disabled", true);
+  }
+
+  //disable next button on last page
+  if (global.search.page === global.search.totalPages) {
+    document.querySelector("#next").setAttribute("disabled", true);
+  }
 }
 
 // Display Movies Slider
