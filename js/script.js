@@ -217,13 +217,50 @@ async function search() {
   global.search.term = urlParams.get("search-term");
 
   if (global.search.term !== "" && global.search.term !== null) {
-    const results = await searchAPIData();
-    console.log(results);
+    const { results, total_pages, page } = await searchAPIData();
+    if (results.length === 0) {
+      showAlert("No results found");
+      return;
+    }
+
+    displaySearchResults(results);
+
+    document.querySelector("#search-term").value = "";
   } else {
     showAlert("Please enter a term");
   }
 }
 
+function displaySearchResults(results) {
+  results.forEach((result) => {
+    const div = document.createElement("div");
+    div.classList.add("card");
+    div.innerHTML = ` 
+    <a href="${global.search.type}-details.html?id=${result.id}">
+    <img
+      src=${
+        result.poster_path
+          ? IMAGE_PATH + result.poster_path
+          : "images/no-image.jpg"
+      }
+      class="card-img-top"
+      alt=${result?.title || result.name}
+    />
+  </a>
+  <div class="card-body">
+    <h5 class="card-title">${result?.title || result.name}</h5>
+    <p class="card-text">
+      <small class="text-muted">Release: ${
+        result?.release_date || result.first_air_date
+      }</small>
+    </p>
+  </div>`;
+
+    document.querySelector("#search-results").appendChild(div);
+  });
+}
+
+// Display Movies Slider
 async function displaySlider() {
   const { results } = await fetchAPIData("movie/now_playing");
 
@@ -253,6 +290,7 @@ async function displaySlider() {
   });
 }
 
+// initialize Swiper object
 function initSwiper() {
   const swiper = new Swiper(".swiper", {
     slidesPerView: 1,
@@ -310,7 +348,7 @@ function hideSpinner() {
 }
 
 // display alert dialog
-function showAlert(message, className) {
+function showAlert(message, className = "error") {
   const alertElement = document.createElement("div");
   alertElement.classList.add("alert", className);
   alertElement.appendChild(document.createTextNode(message));
