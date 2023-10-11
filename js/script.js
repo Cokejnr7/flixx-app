@@ -214,11 +214,13 @@ async function search() {
   const urlParams = new URLSearchParams(query);
 
   global.search.type = urlParams.get("type");
-  global.search.term = urlParams.get("term");
+  global.search.term = urlParams.get("search-term");
 
-  if (global.search.term !== "" && global.search.type !== null) {
-    showAlert("Please enter a term");
+  if (global.search.term !== "" && global.search.term !== null) {
+    const results = await searchAPIData();
+    console.log(results);
   } else {
+    showAlert("Please enter a term");
   }
 }
 
@@ -280,6 +282,18 @@ async function fetchAPIData(endpoint) {
   showSpinner();
   const response = await fetch(
     `${API_URL}/${endpoint}?api_key=${API_KEY}&language=en-US`
+  );
+
+  const data = await response.json();
+  hideSpinner();
+  return data;
+}
+
+// search data from an API endpoint
+async function searchAPIData() {
+  showSpinner();
+  const response = await fetch(
+    `${API_URL}/search/${global.search.type}?api_key=${API_KEY}&language=en-US&query=${global.search.term}`
   );
 
   const data = await response.json();
