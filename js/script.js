@@ -1,6 +1,12 @@
 import { API_KEY, API_URL, IMAGE_PATH, OVERLAY_PATH } from "../secret.js";
 const global = {
   currenthPath: window.location.pathname,
+  search: {
+    type: "",
+    term: "",
+    page: 1,
+    totalPages: 1,
+  },
 };
 
 // display popular movies list
@@ -202,6 +208,20 @@ function moneyFormat(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+// Search Movies/Shows
+async function search() {
+  const query = window.location.search;
+  const urlParams = new URLSearchParams(query);
+
+  global.search.type = urlParams.get("type");
+  global.search.term = urlParams.get("term");
+
+  if (global.search.term !== "" && global.search.type !== null) {
+    showAlert("Please enter a term");
+  } else {
+  }
+}
+
 async function displaySlider() {
   const { results } = await fetchAPIData("movie/now_playing");
 
@@ -275,13 +295,17 @@ function hideSpinner() {
   document.querySelector(".spinner").classList.remove("show");
 }
 
-const routes = {
-  HOME: "/index.html",
-  SHOWS: "/shows.html",
-  MOVIE_DETAILS: "/movie-details.html",
-  SHOW_DETAILS: "/tv-details.html",
-  SEARCH: "/search.html",
-};
+// display alert dialog
+function showAlert(message, className) {
+  const alertElement = document.createElement("div");
+  alertElement.classList.add("alert", className);
+  alertElement.appendChild(document.createTextNode(message));
+  document.querySelector("#alert").appendChild(alertElement);
+
+  setTimeout(() => {
+    alertElement.remove();
+  }, 3000);
+}
 
 function highlightActiveLink() {
   const navLinks = document.querySelectorAll(".nav-link");
@@ -291,6 +315,14 @@ function highlightActiveLink() {
     }
   });
 }
+
+const routes = {
+  HOME: "/index.html",
+  SHOWS: "/shows.html",
+  MOVIE_DETAILS: "/movie-details.html",
+  SHOW_DETAILS: "/tv-details.html",
+  SEARCH: "/search.html",
+};
 
 function init() {
   switch (global.currenthPath) {
@@ -309,7 +341,7 @@ function init() {
       displayShowDetails();
       break;
     case routes.SEARCH:
-      console.log("Search");
+      search();
       break;
   }
 
