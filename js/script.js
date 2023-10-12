@@ -432,6 +432,7 @@ function init() {
       displayPopularMovies();
       displaySlider();
       break;
+    case "/shows":
     case routes.SHOWS:
       displayPopularTVShows();
       break;
